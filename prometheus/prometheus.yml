@@ -1,0 +1,20 @@
+global:
+  scrape_interval: 5s
+  evaluation_interval: 5s
+
+rule_files:
+  - /etc/prometheus/alerts.yml
+
+scrape_configs:
+  # "app" resolves to one IP per replica; Prometheus re-checks every 5s, so
+  # new replicas show up and dead ones disappear on their own.
+  - job_name: app
+    dns_sd_configs:
+      - names: [app]
+        type: A
+        port: 8000
+        refresh_interval: 5s
+
+  - job_name: prometheus
+    static_configs:
+      - targets: ["localhost:9090"]

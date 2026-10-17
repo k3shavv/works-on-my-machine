@@ -1,0 +1,26 @@
+groups:
+  - name: app
+    rules:
+      - alert: AppInstanceDown
+        expr: up{job="app"} == 0
+        for: 15s
+        annotations:
+          summary: "A replica stopped answering /metrics ({{ $labels.instance }})"
+
+      - alert: FewerThanTwoReplicas
+        expr: count(up{job="app"} == 1) < 2
+        for: 30s
+        annotations:
+          summary: "Fewer than 2 healthy replicas, so there is no redundancy"
+
+      - alert: HighErrorRate
+        expr: sum(rate(http_requests_total{status=~"5.."}[1m])) / sum(rate(http_requests_total[1m])) > 0.05
+        for: 1m
+        annotations:
+          summary: "More than 5% of requests are failing"
+
+      - alert: DatabaseErrors
+        expr: sum(rate(db_errors_total[1m])) > 0
+        for: 30s
+        annotations:
+          summary: "The app is failing to talk to Postgres"
