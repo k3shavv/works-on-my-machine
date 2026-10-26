@@ -109,14 +109,6 @@ blocked by nginx from the outside.)
 | 2 | One replica stays alive but `/healthz` returns 500 | After 3 failed checks (about 15 s) the container is marked unhealthy and `autoheal` restarts it. |
 | 3 | The database container is killed | `/readyz` and `/notes` return a clean `503`; Docker restarts Postgres; replicas reconnect on their own **without** being restarted (`/healthz` does not depend on the DB, on purpose); data is still there. |
 
-### Demo results (fill this in from your own machine)
-
-Run `make up && make demo-crash` and paste the output here. Look at the lines
-`t+NNs health=... (restarted)` for recovery time and the status-code counts at the end.
-
-```
-(paste your output here)
-```
 
 ## Backups and restore
 
